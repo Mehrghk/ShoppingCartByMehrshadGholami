@@ -9,11 +9,10 @@
 //TODO adding checkout button ✅
 
 //TODO if price more than 100 hezar no shipping price else adding 5 hezar to total price ✅
-//TODO adding 10% maliat to total price
+//TODO adding 10% maliat to total price ✅
 
 const shopping_icon = document.querySelector(".icon-cart");
 const product_add_button = document.querySelectorAll(".addCartBtn");
-// console.log(product_add_button);
 const product_div = document.querySelector(".item");
 const Shopping_cart_div = document.querySelector(".shoppingCartTab");
 const list_cart_HTML = document.querySelector(".listCartHtml");
@@ -38,11 +37,7 @@ function init(){
         } else if (action.closest(".remove")){
             action.closest(".remove").closest(".grid").remove();
             updateTotalPrice();
-        }
-        //  else if (action.closest(".item")){ //for more info 
-        //     console.log("list item");
-        // } 
-        else if (action.closest(".minus")){
+        } else if (action.closest(".minus")){
             reduceProductQuantityByOne(action.closest(".minus"));
         } else if (action.closest(".plus")){
             increaseProductQuantityByOne(action);
@@ -59,12 +54,8 @@ function addProductToShoppingCart(clickedProduct){
     let productContainer = clickedProduct.closest(".item");
     let productImage = productContainer.querySelector("img").src;
     let productName = productContainer.querySelector(".name").innerText;
-    let productPriceSpan = productContainer.querySelector(".price");
     let productPrice = parseInt(productContainer.querySelector(".price").dataset.price);
-    // productPrice.innerText = parseInt(productPrice.innerText)+",000";
-    // console.log(productPrice);
 
-        
     let existingProduct = Array.from(list_cart_HTML.children).find(item => 
         item.querySelector(".name").innerText === productName
     );
@@ -104,34 +95,36 @@ function addProductToShoppingCart(clickedProduct){
         updateTotalPrice();
     }
 }
+
 function updateTotalPrice(){
     let totalPrice = 0;
-    let shippingPrice = 0;
+    let totalshippingPrice = 0;
 
     let allItems = list_cart_HTML.querySelectorAll(".grid");
     allItems.forEach(product => {
         let quantity = parseInt(product.querySelector(".quantity span:nth-child(2)").innerText);
         let price = parseInt(product.querySelector(".price").innerText.replace(",", "").replace(" تومان", ""));
+        let productPrice = parseInt(product.querySelector(".price").dataset.price);
 
+        let shippingPrice = 0;
         shippingPrice = parseInt(document.querySelector(".shippingPrice").innerText.replace(",", "").replace(" تومان", ""));
         
-        if(price >= 100000){
-            document.querySelector(".shippingPrice").innerText = `${shippingPrice.toLocaleString()} تومان`;
-            shippingPrice = 500*0;
-            
+        if(productPrice >= 100000){
+            shippingPrice = 5000*0;
         } else {
             shippingPrice = 5000*quantity;
-            document.querySelector(".shippingPrice").innerText = `${shippingPrice.toLocaleString()} تومان`;
         }
 
-
-        totalPrice += price + shippingPrice;
+        totalshippingPrice += shippingPrice;
+        totalPrice += price;
         let Maliat = totalPrice * 10/100;
         totalPrice += Maliat;
 
     });
-   
-    document.querySelector(".totalPrice").innerText = `${totalPrice.toLocaleString()} تومان`;
+    
+    document.querySelector(".shippingPrice").innerText = `${totalshippingPrice.toLocaleString()} تومان`;
+    let finalPrice = totalPrice + totalshippingPrice;
+    document.querySelector(".totalPrice").innerText = `${finalPrice.toLocaleString()} تومان`;
     
 
 }
